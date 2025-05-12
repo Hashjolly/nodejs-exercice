@@ -1,0 +1,62 @@
+[
+  {
+    "name": "AHMED AMIRI",
+    "notes": [12, 14, 13],
+    "address": "789 rue Ibn Sina, Casablanca"
+  },
+  {
+    "name": "ANNA PETROVA",
+    "notes": [13, 14, 12],
+    "address": "123 улица Тверская, Moscow"
+  },
+  {
+    "name": "LUCA FERRARI",
+    "notes": [14, 15, 13],
+    "address": "Via Roma 1, Milano"
+  },
+  {
+    "name": "JAVIER LOPEZ",
+    "notes": [15, 16, 14],
+    "address": "89 Carrer de Mallorca, Barcelona"
+  },
+  {
+    "name": "DIEGO HERNANDEZ",
+    "notes": [14, 15, 16],
+    "address": "456 Avenida de la Constitución, Mexico City"
+  },
+  {
+    "name": "JEAN DUPONT",
+    "notes": [15, 17, 14],
+    "address": "123 rue de la République, Paris"
+  },
+  {
+    "name": "EMILY SMITH",
+    "notes": [16, 17, 15],
+    "address": "567 Elm Street, New York"
+  },
+  {
+    "name": "SARA KHAN",
+    "notes": [17, 18, 16],
+    "address": "34 Lahore Road, Karachi"
+  },
+  {
+    "name": "EMMA JOHNSON",
+    "notes": [16, 18, 17],
+    "address": "789 Maple Avenue, Toronto"
+  },
+  {
+    "name": "SOPHIE MARTIN",
+    "notes": [18, 16, 19],
+    "address": "456 avenue des Lilas, Lyon"
+  },
+  {
+    "name": "THOMAS MÜLLER",
+    "notes": [18, 19, 17],
+    "address": "Am Kurfürstendamm 1, Berlin"
+  },
+  {
+    "name": "MARIA RODRIGUEZ",
+    "notes": [19, 20, 18],
+    "address": "321 Calle de Alcalá, Madrid"
+  }
+]
