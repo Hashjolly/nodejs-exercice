@@ -1,5 +1,7 @@
 const fs = require('node:fs');
 const readline = require('node:readline');
+// Ajouter dotenv et le configurer
+require('dotenv').config();
 
 const rl = readline.createInterface({
   input: process.stdin,
@@ -22,6 +24,10 @@ const commands = [
 	{
 		name: 'add-grade',
 		description: "Ajoute une note à un élève spécifique."
+	},
+	{
+		name: 'add-mention',
+		description: "Ajoute une mention à un élève selon sa moyenne."
 	},
 	{
 		name: 'help',
@@ -79,6 +85,7 @@ function findStudent(name) {
     console.log(`Adresse: ${student.address}`);
     console.log(`Notes: ${student.notes.join(', ')}`);
     console.log(`Moyenne: ${average}`);
+    console.log(`Mention: ${student.mention || "Non définie"}`);
   });
 }
 
@@ -143,6 +150,53 @@ function addGradeToStudent() {
   });
 }
 
+function getMentionFromAverage(average) {
+  const avgNum = parseFloat(average);
+  
+  if (avgNum >= 16 && avgNum <= 18) {
+    return "Très bien";
+  } else if (avgNum >= 14 && avgNum <= 16) {
+    return "Bien";
+  } else if (avgNum >= 12 && avgNum <= 14) {
+    return "Assez bien";
+  } else if (avgNum >= 10 && avgNum <= 12) {
+    return "Passable";
+  } else {
+    return "Non définie";
+  }
+}
+
+function addMentionToStudent() {
+  rl.question('Nom de l\'élève: ', (studentName) => {
+    if (!studentName) {
+      console.log("Erreur: Veuillez spécifier un nom d'élève.");
+      return rl.prompt();
+    }
+    
+    const searchTerm = studentName.toLowerCase();
+    const foundStudent = students.find(student => 
+      student.name.toLowerCase().includes(searchTerm)
+    );
+
+    if (!foundStudent) {
+      console.log(`Aucun élève trouvé avec le nom "${studentName}".`);
+      return rl.prompt();
+    }
+
+    const average = calculateAverage(foundStudent.notes);
+    const mention = getMentionFromAverage(average);
+    
+    // Ajouter la mention à l'étudiant
+    foundStudent.mention = mention;
+    
+    // Sauvegarde des modifications dans le fichier
+    fs.writeFileSync('./student.json', JSON.stringify(students, null, 2), 'utf8');
+    
+    console.log(`La mention "${mention}" a été attribuée à ${foundStudent.name} (moyenne: ${average}).`);
+    rl.prompt();
+  });
+}
+
 function showHelp() {
   console.log("\nCommandes disponibles:");
   commands.forEach(cmd => {
@@ -172,7 +226,9 @@ function processCommand(input) {
       break;
     case 'add-grade':
       addGradeToStudent();
-      // Pas besoin d'appeler rl.prompt() ici car addGradeToStudent le fait déjà
+      break;
+    case 'add-mention':
+      addMentionToStudent();
       break;
     case 'exit':
     case 'quit':
