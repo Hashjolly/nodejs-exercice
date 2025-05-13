@@ -111,7 +111,7 @@ function addGradeToStudent() {
   rl.question('Nom de l\'élève: ', (studentName) => {
     if (!studentName) {
       console.log("Erreur: Veuillez spécifier un nom d'élève.");
-      return promptUser();
+      return rl.prompt();
     }
     
     const searchTerm = studentName.toLowerCase();
@@ -121,7 +121,7 @@ function addGradeToStudent() {
 
     if (!foundStudent) {
       console.log(`Aucun élève trouvé avec le nom "${studentName}".`);
-      return promptUser();
+      return rl.prompt();
     }
 
     rl.question('Note à ajouter: ', (gradeInput) => {
@@ -129,7 +129,7 @@ function addGradeToStudent() {
       
       if (isNaN(grade)) {
         console.log("Erreur: Veuillez entrer un nombre valide pour la note.");
-        return promptUser();
+        return rl.prompt();
       }
 
       foundStudent.notes.push(grade);
@@ -138,7 +138,7 @@ function addGradeToStudent() {
       fs.writeFileSync('./student.json', JSON.stringify(students, null, 2), 'utf8');
       
       console.log(`La note ${grade} a bien été ajoutée à l'élève ${foundStudent.name}.`);
-      promptUser();
+      rl.prompt();
     });
   });
 }
@@ -150,34 +150,29 @@ function showHelp() {
   });
 }
 
-function promptUser() {
-  rl.question('\nEntrez une commande: ', (input) => {
-    processCommand(input);
-  });
-}
-
 function processCommand(input) {
   const [command, ...args] = input.trim().split(' ');
 
   switch (command.toLowerCase()) {
     case 'help':
       showHelp();
-      promptUser();
+      rl.prompt();
       break;
     case 'list':
       listStudents();
-      promptUser();
+      rl.prompt();
       break;
     case 'find':
       findStudent(args.join(' '));
-      promptUser();
+      rl.prompt();
       break;
     case 'more':
       filterStudentsByGrade(args[0]);
-      promptUser();
+      rl.prompt();
       break;
     case 'add-grade':
       addGradeToStudent();
+      // Pas besoin d'appeler rl.prompt() ici car addGradeToStudent le fait déjà
       break;
     case 'exit':
     case 'quit':
@@ -187,9 +182,14 @@ function processCommand(input) {
     default:
       console.log(`Commande inconnue: ${command}`);
       console.log("Tapez 'help' pour voir les commandes disponibles.");
-      promptUser();
+      rl.prompt();
   }
 }
+
+// Remplacer la fonction promptUser par l'utilisation de rl.line
+rl.on('line', (input) => {
+  processCommand(input);
+});
 
 rl.on('close', () => {
   console.log("\nAu revoir!");
@@ -198,4 +198,7 @@ rl.on('close', () => {
 
 console.log("=== Système de Gestion des Élèves ===");
 console.log("Entrez une commande (tapez 'help' pour voir les commandes disponibles):");
-promptUser();
+
+// Définir l'invite une seule fois
+rl.setPrompt('\nEntrez une commande: ');
+rl.prompt();
