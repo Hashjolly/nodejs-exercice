@@ -1,4 +1,10 @@
-const fs = require('node:fs')
+const fs = require('node:fs');
+const readline = require('node:readline');
+
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout
+});
 
 const commands = [
 	{
@@ -12,6 +18,10 @@ const commands = [
 	{
 		name: 'more <number>',
 		description: "Filtre les élèves en fonction de leur moyenne"
+	},
+	{
+		name: 'add-grade',
+		description: "Ajoute une note à un élève spécifique."
 	},
 	{
 		name: 'help',
@@ -97,6 +107,42 @@ function filterStudentsByGrade(minGrade) {
   });
 }
 
+function addGradeToStudent() {
+  rl.question('Nom de l\'élève: ', (studentName) => {
+    if (!studentName) {
+      console.log("Erreur: Veuillez spécifier un nom d'élève.");
+      return promptUser();
+    }
+    
+    const searchTerm = studentName.toLowerCase();
+    const foundStudent = students.find(student => 
+      student.name.toLowerCase().includes(searchTerm)
+    );
+
+    if (!foundStudent) {
+      console.log(`Aucun élève trouvé avec le nom "${studentName}".`);
+      return promptUser();
+    }
+
+    rl.question('Note à ajouter: ', (gradeInput) => {
+      const grade = parseFloat(gradeInput);
+      
+      if (isNaN(grade)) {
+        console.log("Erreur: Veuillez entrer un nombre valide pour la note.");
+        return promptUser();
+      }
+
+      foundStudent.notes.push(grade);
+      
+      // Sauvegarde des modifications dans le fichier
+      fs.writeFileSync('./student.json', JSON.stringify(students, null, 2), 'utf8');
+      
+      console.log(`La note ${grade} a bien été ajoutée à l'élève ${foundStudent.name}.`);
+      promptUser();
+    });
+  });
+}
+
 function showHelp() {
   console.log("\nCommandes disponibles:");
   commands.forEach(cmd => {
@@ -104,40 +150,52 @@ function showHelp() {
   });
 }
 
-console.log("=== Système de Gestion des Élèves ===");
-console.log("Entrez une commande (tapez 'help' pour voir les commandes disponibles):");
+function promptUser() {
+  rl.question('\nEntrez une commande: ', (input) => {
+    processCommand(input);
+  });
+}
 
-process.stdin.on("data", (chunk) => {
-	const data = chunk.toString().trim();
-	const [command, ...args] = data.split(' ');
+function processCommand(input) {
+  const [command, ...args] = input.trim().split(' ');
 
-	switch (command.toLowerCase()) {
-		case 'help':
-			showHelp();
-			break;
-		case 'list':
-			listStudents();
-			break;
-		case 'find':
-			findStudent(args.join(' '));
-			break;
-		case 'more':
-			filterStudentsByGrade(args[0]);
-			break;
-		case 'exit':
-		case 'quit':
-			console.log("Au revoir!");
-			process.exit(0);
-			break;
-		default:
-			console.log(`Commande inconnue: ${command}`);
-			console.log("Tapez 'help' pour voir les commandes disponibles.");
-	}
+  switch (command.toLowerCase()) {
+    case 'help':
+      showHelp();
+      promptUser();
+      break;
+    case 'list':
+      listStudents();
+      promptUser();
+      break;
+    case 'find':
+      findStudent(args.join(' '));
+      promptUser();
+      break;
+    case 'more':
+      filterStudentsByGrade(args[0]);
+      promptUser();
+      break;
+    case 'add-grade':
+      addGradeToStudent();
+      break;
+    case 'exit':
+    case 'quit':
+      console.log("Au revoir!");
+      rl.close();
+      break;
+    default:
+      console.log(`Commande inconnue: ${command}`);
+      console.log("Tapez 'help' pour voir les commandes disponibles.");
+      promptUser();
+  }
+}
 
-	console.log("\nEntrez une commande:");
-})
-
-process.on('SIGINT', () => {
+rl.on('close', () => {
   console.log("\nAu revoir!");
   process.exit(0);
 });
+
+console.log("=== Système de Gestion des Élèves ===");
+console.log("Entrez une commande (tapez 'help' pour voir les commandes disponibles):");
+promptUser();
