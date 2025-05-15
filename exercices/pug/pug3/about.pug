@@ -1,0 +1,25 @@
+extends layout
+
+block content
+  section.about-me
+    h2 À propos de moi
+    
+    .about-content
+      .about-image
+        img(src="/assets/img/profile.jpg", alt="Ma photo de profil")
+      
+      .about-description
+        p Je suis un développeur web passionné avec une expertise en JavaScript, Node.js, et les frameworks front-end modernes.
+        p Avec plus de 5 ans d'expérience dans le développement web, j'ai travaillé sur divers projets allant des applications web aux services backend.
+        
+        h3 Mes compétences
+        ul.skills-list
+          li JavaScript / TypeScript
+          li Node.js / Express
+          li React / Vue / Angular
+          li MongoDB / PostgreSQL
+          li HTML5 / CSS3 / Sass
+          li Git / CI/CD
+
+block scripts
+  script(src="/assets/js/about.js")

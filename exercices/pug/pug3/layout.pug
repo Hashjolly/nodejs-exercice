@@ -1,0 +1,23 @@
+doctype html
+html(lang="fr")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    meta(http-equiv="X-UA-Compatible", content="ie=edge")
+    title Mon Portfolio - #{pageTitle}
+    link(rel="stylesheet", href="/assets/css/style.css")
+  body
+    header.header
+      .container
+        h1.logo Mon Portfolio
+        nav.main-nav
+          include menu
+    
+    main.main-content
+      .container
+        block content
+    
+    include footer
+    
+    script(src="/assets/js/main.js")
+    block scripts
